@@ -1,11 +1,8 @@
 from flask import Flask, render_template, request
-import jsonify
-import requests
 import pickle
 import pandas as pd
 import numpy as np
 from woe_enc import WoeEncoder
-import sklearn
 
 app = Flask(__name__)
 
@@ -165,7 +162,7 @@ def predict():
         ppred_dt = np.hstack(dt_ppred_list).mean(axis=1)
 
         ppred = (ppred_woe + ppred_ohe + ppred_dt) / 3
-        ppred = round(ppred[0], 2)
+        ppred = np.round(ppred[0], 4)
 
         if ppred > 0.27562525642456126:
             decision_text = f'Refuse: probability of default is {100*ppred} %.'
