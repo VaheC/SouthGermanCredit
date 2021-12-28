@@ -47,6 +47,9 @@ class WoeEncoder(BaseEstimator, TransformerMixin):
             X[col] = X[col].map(self.temp_map_dict[col])
         return X[self.temp_feat]
 
+import __main__
+__main__.WoeEncoder = WoeEncoder
+
 app = Flask(__name__)
 
 with open('ohe_transformer.pkl', 'rb') as file:
