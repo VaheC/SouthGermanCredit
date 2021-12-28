@@ -208,9 +208,9 @@ def predict():
         ppred = np.round(ppred[0], 4)
 
         if ppred > 0.27562525642456126:
-            decision_text = f'Refuse: probability of default is {100*ppred} %.'
+            decision_text = f'Refuse: probability of default is {100*ppred:.2f} %.'
         else:
-            decision_text = f'Proceed: probability of default is {100*ppred} %.'
+            decision_text = f'Proceed: probability of default is {100*ppred:.2f} %.'
         
         return render_template('index.html', prediction_text=decision_text)
     else:
