@@ -1,5 +1,7 @@
+cassandra-driver==3.25.0
 click==7.1.2
 Flask==1.1.4
+geomet==0.2.1.post1
 itsdangerous==1.1.0
 Jinja2==2.11.3
 joblib==1.1.0
@@ -15,4 +17,3 @@ sklearn==0.0
 threadpoolctl==3.0.0
 virtualenv==16.7.5
 Werkzeug==1.0.1
-gunicorn
