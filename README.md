@@ -17,14 +17,24 @@ for an applicant.\
 The final result of the project is a web application. 
 It will take an applicant's characteristics as input 
 and return default probability in line with a possible 
-decision to make.
+decision to make.\\
+
+# Files' description
+model.py contains model building code which actually 
+generates all pkl files in the directory.\
+test folder contains testing code.\
+app.py contains web app code.\
+templates folder contains web app template.\
+SouthGermanCreditViz.ipynb contains all the visualizations and exploratory data analysis.
+woe_enc.py contains a function and a class to generate features in form of weight of evidence.
 
 
 ## Deployment
 
 The deployment is done using Heroku. Heroku is connected 
 to the github. The web app will be updated automatically
-if the code is updated on the github.
+if the code is updated on the github. The web app can be 
+viewed by going [here](https://credit-risk-calculator.herokuapp.com/).
 
 
 ## Demo
@@ -47,8 +57,8 @@ folder. Then use the following command.
 ## Installation
 
 If you have all packages from requirements.txt 
-installed on your pc, then you can run all the codes
-present in this project.
+installed on your pc , then you can run all the codes
+present in this project. 
     
 ## Run Locally
 Install anaconda on your pc.\
