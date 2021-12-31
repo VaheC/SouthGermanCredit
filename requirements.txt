@@ -17,3 +17,4 @@ sklearn==0.0
 threadpoolctl==3.0.0
 virtualenv==16.7.5
 Werkzeug==1.0.1
+gunicorn
