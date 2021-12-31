@@ -17,7 +17,7 @@ for an applicant.\
 The final result of the project is a web application. 
 It will take an applicant's characteristics as input 
 and return default probability in line with a possible 
-decision to make.\\
+decision to make.\
 
 # Files' description
 model.py contains model building code which actually 
@@ -25,7 +25,7 @@ generates all pkl files in the directory.\
 test folder contains testing code.\
 app.py contains web app code.\
 templates folder contains web app template.\
-SouthGermanCreditViz.ipynb contains all the visualizations and exploratory data analysis.
+SouthGermanCreditViz.ipynb contains all the visualizations and exploratory data analysis.\
 woe_enc.py contains a function and a class to generate features in form of weight of evidence.
 
 
