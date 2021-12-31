@@ -9,6 +9,7 @@ __main__.WoeEncoder = WoeEncoder
 
 app = Flask(__name__)
 
+# Loading the necessary pickle files
 with open('ohe_transformer.pkl', 'rb') as file:
     ohe_transformer = pickle.load(file)
 
@@ -27,13 +28,16 @@ with open('woe_cv.pkl', 'rb') as file:
 with open('dt_cv.pkl', 'rb') as file:
     cv_dt = pickle.load(file)
 
+# Specifying GET method
 @app.route('/',methods=['GET'])
 def Home():
     return render_template('index.html')
 
+# Specifying POST method
 @app.route("/predict", methods=['POST'])
 def predict():
     if request.method == 'POST':
+        # Getting input from a user
         status = int(str(request.form['status']).split(':')[0].strip())
         duration = int(request.form['duration'])
         credit_history = int(str(request.form['credit_history']).split(':')[0].strip()) - 1
@@ -56,9 +60,9 @@ def predict():
         foreign_worker = int(str(request.form['foreign_worker']).split(':')[0].strip())
 
         # Let's create a function which will allow to assign a datapoint 
-        # to one the clusters derived during the analysis.
+        # to one of the clusters derived during the analysis.
         def get_hcluster(x):
-            # The hard coded values below come from the model_estimation.ipynb.
+            # The hard coded values below come from the SouthGermanCreditViz.ipynb.
             # The values represent medians for age, amount, and duration 
             # respectively in each cluster.
             h1 = np.array([36, 4736, 30])
@@ -78,19 +82,19 @@ def predict():
         dage = (100 - age) / (12 * duration)
 
         # Let's create a dictionary of lmbda values (Box-Cox transformation lmbda in scipy)
-        # for each numeric feature. The values come from the model_estimation.ipynb.
+        # for each numeric feature. The values come from the SouthGermanCreditViz.ipynb.
         lmbda_dict = {'age': -0.6524316739182968,
                       'amount': -0.0639326907261038,
                       'duration': 0.09297575561665981,
                       'dage': -0.025199226092440907}
 
-        # Now let's apply Box-Cox transformation on numeric features.
+        # Now let's apply Box-Cox transformation to numeric features.
         age = (age**lmbda_dict['age'] - 1) / lmbda_dict['age']
         dage = (dage**lmbda_dict['dage'] - 1) / lmbda_dict['dage']
         amount = (amount**lmbda_dict['amount'] - 1) / lmbda_dict['amount']
         duration = (duration**lmbda_dict['duration'] - 1) / lmbda_dict['duration']
 
-
+        # Constructing features for the first model
         data = pd.DataFrame([job, employment_duration, number_credits, 
                              other_debtors, status_sex, foreign_worker, 
                              status, credit_history, people_liable, dti, 
@@ -109,10 +113,12 @@ def predict():
         num_col_list = ['age', 'amount', 'duration', 'dage']
         num_data.columns = num_col_list
 
+        # Applying onehot-encoding to the categorical features
         data_ohe = pd.DataFrame(ohe_transformer.transform(data[cat_col_list]))
         data_ohe.columns = list(ohe_transformer.get_feature_names_out(cat_col_list))
         data_ohe = pd.concat([num_data, data_ohe], axis=1)
 
+        # Getting the output of the first model
         lr_ohe_ppred_list = []
         for i_model in cv_ohe['estimator']:
             lr_ohe_ppred = i_model.predict_proba(data_ohe)[:, 1]
@@ -120,6 +126,7 @@ def predict():
 
         ppred_ohe = np.hstack(lr_ohe_ppred_list).mean(axis=1)
 
+        # Constructing features for the second model
         data = pd.concat([num_data, data], axis=1)
         for col in num_col_list:
             data[f'{col}_bin'] = kbd_dict[col].transform(data[col].to_frame())
@@ -147,6 +154,7 @@ def predict():
 
             cat_col_list.append(temp_iter_feat_name)
 
+        # Getting the result of the second model
         lr_woe_ppred_list = []
         for i_model in cv_woe['estimator']:
             lr_woe_ppred = i_model.predict_proba(data[cat_col_list])[:, 1]
@@ -154,9 +162,11 @@ def predict():
 
         ppred_woe = np.hstack(lr_woe_ppred_list).mean(axis=1)
 
+        # Constructing features for the third model
         dt_feat_list = num_col_list.copy()
         dt_feat_list.extend(cat_col_list)
 
+        # Getting the output of the third model
         dt_ppred_list = []
         for i_model in cv_dt['estimator']:
             dt_ppred = i_model.predict_proba(data[dt_feat_list])[:, 1]
@@ -164,9 +174,11 @@ def predict():
 
         ppred_dt = np.hstack(dt_ppred_list).mean(axis=1)
 
+        # Getting the result of the ensemble model
         ppred = (ppred_woe + ppred_ohe + ppred_dt) / 3
         ppred = np.round(ppred[0], 4)
 
+        # Showing the output of the ensemble to the user
         if ppred > 0.27562525642456126:
             decision_text = f'Refuse: probability of default is {100*ppred:.2f} %.'
         else:
