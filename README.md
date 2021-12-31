@@ -17,7 +17,7 @@ for an applicant.\
 The final result of the project is a web application. 
 It will take an applicant's characteristics as input 
 and return default probability in line with a possible 
-decision to make.\
+decision to make.
 
 # Files' description
 model.py contains model building code which actually 
