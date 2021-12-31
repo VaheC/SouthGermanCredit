@@ -1,7 +1,16 @@
 import pandas as pd
+import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 
+# Creating a function which classifies features by information value
 def get_feat_power(x):
+    '''Returns a features power in a predicting task
+
+       Params:
+       x: float, information value of a feature
+       Return:
+       str, the feature's power in a predicting task
+    '''
     if x < 0.02:
         return 'Useless'
     elif x >= 0.02 and x < 0.1:
@@ -13,7 +22,20 @@ def get_feat_power(x):
     else:
         return 'Suspicious'
 
+# Constructing a class to transform the categorical features into weight of evidence 
+# features and select features that are either 'Medium predictors' or 'Strong predictors'
 class WoeEncoder(BaseEstimator, TransformerMixin):
+    '''Returns transformed features' dataframe
+
+       Params:
+       X: dataframe, all categorical features in a dataframe
+       y: series, target variable
+
+       Return:
+       dataframe, transformed X (all features's categories replaced 
+                  with weight of evidence) containing only 
+                  'Medium predictors' or 'Strong predictors' features
+    '''
     def __init__(self):
         pass
     def fit(self, X, y):
