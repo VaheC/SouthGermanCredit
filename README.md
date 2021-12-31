@@ -26,8 +26,8 @@ test folder contains testing code.\
 app.py contains web app code.\
 templates folder contains web app template.\
 SouthGermanCreditViz.ipynb contains all the visualizations and exploratory data analysis.\
-woe_enc.py contains a function and a class to generate features in form of weight of evidence.
-
+woe_enc.py contains a function and a class to generate features in form of weight of evidence.\
+documents folder contains all the documents related to the project.
 
 ## Deployment
 
